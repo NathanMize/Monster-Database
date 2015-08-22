@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Monster Database Display</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="Monster.css">
+<script src="jquery-2.1.1.min.js"></script>
+<script src="jquery.validate.min.js"></script>
+</head>
+
+<body>
+
+
+<header>
+	D&D 5th Edition Monster Database<br>
+	<span id = "subhead">By Nathan Mize <br> 
+	<a href='MonsterSelect.html'>Go to Search Page</a>
+	<a href='MonsterEdit.html'>Go to Edit Page</a>
+
+</header>
+
+<span id = "status"></span><br>
+<br>
+<br>
+<div id="display" class="MonsterName">
+<span id = "name"></span><br>
+</div>
+<br>
+<div id="display"><br>
+<b>Hitpoints:</b>
+<span id = "hp">none</span><br>
+<b>Armor Class:</b>
+<span id = "ac">none</span><br>
+<b>Challenge Rating:</b>
+<span id = "cr">none</span><br>
+<b>Type:</b>
+<span id = "type">none</span><br>
+<br><b>Attributes:</b><br>
+<span id = "attributes">none</span><br>
+<br><b>Skills:</b><br>
+<span id = "skills">none</span><br>
+<br><b>Special Senses:</b><br>
+<span id = "senses">none</span><br>
+<br><b>Environments:</b><br>
+<span id = "environments">none</span><br>
+<br><b>Minions:</b><br>
+<span id = "minions">none</span><br>
+<br><b>Bosses:</b><br>
+<span id = "bosses">none</span><br><br>
+</div>
+<br>
+
+
+<script>
+	function getName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+	}
+	function display(){
+	$('#status').html('Getting Monsters');
+	$linkName = getName('name');
+	$.ajax({
+			type: 'POST',
+			url: 'display.php',
+			data: {name: $linkName},
+			dataType: 'json',
+			success: function (data) {
+				$('#status').html('');
+				$('#name').html("<b>"+data.name+"<b>");
+				$('#hp').html(data.hp);
+				$('#ac').html(data.ac);
+				$('#cr').html(data.cr);
+				$('#type').html(data.type);
+				
+				$attrText = '';
+				for (i=0;i<data.attr.length;i++){
+					$attrText += data.attr[i] + ": " + data.attrValue[i] + "<br>";
+				}
+				if(data.attr.length >= 1){
+					$('#attributes').html($attrText);
+				}
+				$skillText = '';
+				for (i=0;i<data.skills.length;i++){
+					$skillText += data.skills[i] + " +" + data.skillsValue[i] + "<br>";
+				}
+				if(data.skills.length >= 1){
+					$('#skills').html($skillText);
+				}
+				$senseText = '';
+				for (i=0;i<data.sense.length;i++){
+					$senseText += data.sense[i] + " " + data.senseValue[i] + "ft<br>";
+				}
+				if(data.sense.length >= 1){
+					$('#senses').html($senseText);
+				}
+				$environText = '';
+				for (i=0;i<data.environ.length;i++){
+					$environText += data.environ[i] +"<br>";
+				}
+				if(data.environ.length >= 1){
+					$('#environments').html($environText);
+				}
+				$bossText = '';
+				for (i=0;i<data.bosses.length;i++){
+					$bossText += data.bosses[i] +"<br>";
+				}
+				if(data.bosses.length >= 1){
+					$('#bosses').html($bossText);
+				}
+				
+				$minionText = '';
+				for (i=0;i<data.minion.length;i++){
+					$minionText += data.minion[i] + "<br>";
+				}
+				if(data.minion.length >= 1){
+					$('#minions').html($minionText);	
+				}
+			},
+			error: function (){
+				$('#status').html('Error Finding Monsters');
+			},
+	});
+	}
+	display();
+
+
+</script>
+
+
+
+</body>
+</html>

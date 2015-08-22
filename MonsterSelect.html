@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Monster Database Select</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="Monster.css">
+<script src="jquery-2.1.1.min.js"></script>
+<script src="jquery.validate.min.js"></script>
+</head>
+
+<body>
+
+
+<header>
+	D&D 5th Edition Monster Database<br>
+	<span id = "subhead">By Nathan Mize <br> 
+	<a href='MonsterEdit.html'>Go to Edit Page</a>
+</header>
+
+
+	<span id = "status"></span><br>
+
+<div id = "display">
+	<b><span id = "resultsTitle"></span><br></b>
+	<span id = "results">Please Select a Search Option</span><br>
+</div><br>
+
+<form id = "specfic" method = "get" action = "MonsterDisplay.html">
+		SELECT SPECIFIC CREATURE: <br>
+		<select name="name" id="name"></select>
+		<input type="submit" value="Go to Monster"><br>
+</form><br>
+
+<form id = "getCRForm">
+		CREATURES BY CHALLENGE RATING: <br>
+		Minimum CR <input type="number" name="getCRmin" id="getCRmin">
+		Maximum CR <input type="number" name="getCRmax" id="getCRmax">
+		<input type="submit" value="Get Monsters"><br>
+</form><br>
+
+<form id = "getTypeForm">
+		CREATURES BY TYPE: <br>
+		<select name="creatureType" id="creatureType"></select>
+		<input type="submit" value="Get Monsters"><br>
+</form><br>
+
+<form id = "getAttrForm">
+		CREATURES BY ATTRIBUTE: <br>
+		Attribute <select name="getAttr" id="getAttr"></select>
+		>= <input type="number" name="getStat" id="getStat">
+		<input type="submit" value="Get Monsters"><br>
+</form><br>
+
+<form id = "getSkillForm">
+		CREATURES BY SKILL: <br>
+		Skill <select name="skill" id="skill"></select>
+		<input type="submit" value="Get Monsters"><br>
+</form><br>
+
+<form id = "getEnvironForm">
+		CREATURES BY ENVIRONMENT: <br>
+		Environment <select name="environ" id="environ"></select>
+		<input type="submit" value="Get Monsters"><br>
+</form><br>
+
+<form id = "getSenseForm">
+		CREATURES BY SENSE: <br>
+		Sense <select name="sense" id="sense"></select>
+		<input type="submit" value="Get Monsters"><br>
+</form><br>
+
+<form id = "getMinionForm">
+		MINIONS: <br>
+		Boss <select name="boss" id="boss"></select>
+		<input type="submit" value="Get Monsters"><br>
+</form><br>
+
+
+<script>
+	function dropdowns() {
+		$('#status').html('getting dropdown menus');
+		$.ajax({
+			type: 'POST',
+			url: 'dropdowns.php',
+			dataType: 'json',
+			success: function(data){
+				$('#status').html(' ');
+				$options = '';
+				for (i=0;i<data.attr.length;i++){
+					$options += "<option value='" + data.attr[i] + "'>" + data.attr[i] + "</option>"; 
+				}	
+				$('#getAttr').html($options);
+				
+				$options = '';
+				for (i=0;i<data.creature.length;i++){
+					$options += "<option value='" + data.creature[i] + "'>" + data.creature[i] + "</option>"; 
+				}
+				$('#boss').html($options);
+				$('#name').html($options);
+				
+				$options = '';
+				for (i=0;i<data.type.length;i++){
+					$options += "<option value='" + data.type[i] + "'>" + data.type[i] + "</option>"; 
+				}
+				$('#creatureType').html($options);
+				
+				$options = '';
+				for (i=0;i<data.skill.length;i++){
+					$options += "<option value='" + data.skill[i] + "'>" + data.skill[i] + "</option>"; 
+				}
+				$('#skill').html($options);
+				
+				$options = '';
+				for (i=0;i<data.sense.length;i++){
+					$options += "<option value='" + data.sense[i] + "'>" + data.sense[i] + "</option>"; 
+				}
+				$('#sense').html($options);
+				
+				$options = '';
+				for (i=0;i<data.environ.length;i++){
+					$options += "<option value='" + data.environ[i] + "'>" + data.environ[i] + "</option>"; 
+				}
+				$('#environ').html($options);
+				
+			},
+			error: function (){
+				$('#status').html('error populating dropdowns');
+			},
+		});
+	}
+	dropdowns();
+	
+	
+	
+	$('#getCRForm').submit(function(event) {
+		
+		if($('#getCRForm').valid()){
+		
+			event.preventDefault();
+			$('#status').html('Getting Monsters');
+			$.ajax({
+					type: 'POST',
+					url: 'GET/getCR.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						$('#status').html('');
+						$('#resultsTitle').html("Monsters by Challenge Rating");
+						$rows = '';
+						for (i=0;i<data.name.length;i++){
+							$rows += data.name[i] + " has CR " + data.cr[i] + "<br>";
+						}
+						if(data.name.length < 1){$rows = 'No monsters found'};
+						$('#results').html($rows);
+					},
+					error: function (){
+						$('#status').html('Error Finding Monsters');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	});
+	
+	$('#getTypeForm').submit(function(event) {
+		
+		if($('#getTypeForm').valid()){
+		
+			event.preventDefault();
+			$('#status').html('Getting Monsters');
+			$.ajax({
+					type: 'POST',
+					url: 'GET/getType.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						$('#status').html('');
+						$title = 'Monsters of Type: ';
+						$title += data.creatureType;
+						$('#resultsTitle').html($title);
+						$rows = '';
+						for (i=0;i<data.name.length;i++){
+							$rows += data.name[i] + "<br>";
+						}
+						if(data.name.length < 1){$rows = 'No monsters found'};
+						$('#results').html($rows);
+					},
+					error: function (){
+						$('#status').html('Error Finding Monsters');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	});
+	
+	$('#getAttrForm').submit(function(event) {
+		
+		if($('#getAttrForm').valid()){
+		
+			event.preventDefault();
+			$('#status').html('Getting Monsters');
+			$.ajax({
+					type: 'POST',
+					url: 'GET/getAttr.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						$('#status').html('');
+						$title = 'Monsters with ';
+						$title += data.attr + ' >= ' + data.value;
+						$('#resultsTitle').html($title);
+						$rows = '';
+						for (i=0;i<data.name.length;i++){
+							$rows += data.name[i] + " " + data.stat[i] + "<br>";
+						}
+						if(data.name.length < 1){$rows = 'No monsters found'};
+						$('#results').html($rows);
+					},
+					error: function (){
+						$('#status').html('Error Finding Monsters');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	});
+	
+	$('#getEnvironForm').submit(function(event) {
+		
+		if($('#getEnvironForm').valid()){
+		
+			event.preventDefault();
+			$('#status').html('Getting Monsters');
+			$.ajax({
+					type: 'POST',
+					url: 'GET/getEnviron.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						$('#status').html('');
+						$title = 'Monsters found in: ';
+						$title += data.environ;
+						$('#resultsTitle').html($title);
+						$rows = '';
+						for (i=0;i<data.name.length;i++){
+							$rows += data.name[i] + "<br>";
+						}
+						if(data.name.length < 1){$rows = 'No monsters found'};
+						$('#results').html($rows);
+					},
+					error: function (){
+						$('#status').html('Error Finding Monsters');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	});
+	
+	$('#getSkillForm').submit(function(event) {
+		
+		if($('#getSkillForm').valid()){
+		
+			event.preventDefault();
+			$('#status').html('Getting Monsters');
+			$.ajax({
+					type: 'POST',
+					url: 'GET/getSkill.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						$('#status').html('');
+						$title = 'Monsters with a bonus to ';
+						$title += data.skill;
+						$('#resultsTitle').html($title);
+						$rows = '';
+						for (i=0;i<data.name.length;i++){
+							$rows += data.name[i] + " +" + data.bonus[i] + "<br>";
+						}
+						if(data.name.length < 1){$rows = 'No monsters found'};
+						$('#results').html($rows);
+					},
+					error: function (){
+						$('#status').html('Error Finding Monsters');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	});
+	
+	$('#getSenseForm').submit(function(event) {
+		
+		if($('#getSenseForm').valid()){
+		
+			event.preventDefault();
+			$('#status').html('Getting Monsters');
+			$.ajax({
+					type: 'POST',
+					url: 'GET/getSense.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						$('#status').html('');
+						$title = 'Monsters with ';
+						$title += data.sense;
+						$('#resultsTitle').html($title);
+						$rows = '';
+						for (i=0;i<data.name.length;i++){
+							$rows += data.name[i] + " " + data.range[i] + "ft <br>";
+						}
+						if(data.name.length < 1){$rows = 'No monsters found'};
+						$('#results').html($rows);
+					},
+					error: function (){
+						$('#status').html('Error Finding Monsters');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	});
+	
+	$('#getMinionForm').submit(function(event) {
+		
+		if($('#getMinionForm').valid()){
+		
+			event.preventDefault();
+			$('#status').html('Getting Monsters');
+			$.ajax({
+					type: 'POST',
+					url: 'GET/getMinion.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						$('#status').html('');
+						$title = 'Minions of ';
+						$title += data.boss;
+						$('#resultsTitle').html($title);
+						$rows = '';
+						for (i=0;i<data.name.length;i++){
+							$rows += data.name[i] + "<br>";
+						}
+						if(data.name.length < 1){$rows = 'No monsters found'};
+						$('#results').html($rows);
+					},
+					error: function (){
+						$('#status').html('Error Finding Monsters');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	});
+	
+</script>
+
+
+
+</body>
+</html>

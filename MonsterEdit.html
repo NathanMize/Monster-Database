@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Monster Database Edit</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="Monster.css">
+<script src="jquery-2.1.1.min.js"></script>
+<script src="jquery.validate.min.js"></script>
+</head>
+
+<body>
+
+
+<header>
+	D&D 5th Edition Monster Database<br>
+	<span id = "subhead">By Nathan Mize <br> 
+	<a href='MonsterSelect.html'>Go to Search Page</a>
+<br>
+</header>
+
+<span id = "status"></span><br>
+
+
+<form id = "creatureForm">
+		Add/Edit Creature: <br>
+		Name <input type="text" name="creatureName" id="creatureName">
+		Hit Points <input type="number" name="creatureHP" id="creatureHP">
+		Armor Class <input type="number" name="creatureAC" id="creatureAC"><br>
+		Challenge Rating <input type="decimal" name="creatureCR" id="creatureCR">
+		Type <select name="creatureType" id="creatureType"></select>
+		<input type="submit" value="Add Creature"><br>
+</form><br>
+
+<form id = "creatureAttrForm">
+		Add/Edit Creature Attributes: <br>
+		Creature <select name="ca_creature" id="ca_creature"></select>
+		Attribute <select name="ca_attr" id="ca_attr"></select>
+		Value <input type="number" name="ca_value" id="ca_value">
+		<input type="submit" value="Add Attribute"><br>
+</form><br>
+
+<form id = "creatureSkillForm">
+		Add/Edit Creature Skills: <br>
+		Creature <select name="cs_creature" id="cs_creature"></select>
+		Skills <select name="cs_skill" id="cs_skill"></select>
+		Bonus <input type="number" name="cs_bonus" id="cs_bonus">
+		<input type="submit" value="Add Skill"><br>
+</form><br>
+
+<form id = "creatureSenseForm">
+		Add/Edit Creature Senses: <br>
+		Creature <select name="csen_creature" id="csen_creature"></select>
+		Sense <select name="csen_name" id="csen_name"></select>
+		Range <input type="number" name="csen_range" id="csen_range">
+		<input type="submit" value="Add Sense"><br>
+</form><br>
+
+<form id = "creatureEnvironForm">
+		Add Creature Environments: <br>
+		Creature <select name="ce_creature" id="ce_creature"></select>
+		Environment <select name="ce_name" id="ce_name"></select>
+		<input type="submit" value="Add Environment"><br>
+</form><br>
+
+<form id = "minionForm">
+		Add Minion Relationship: <br>
+		Boss <select name="boss" id="boss"></select>
+		Minion <select name="minion" id="minion"></select>
+		<input type="submit" value="Add Minion"><br>
+</form><br>
+
+<form id = "skillForm">
+		Add/Edit Skill: <br>
+		Name <input type="text" name="skillName" id="skillName">
+		Associated Attribute
+		<select name="skillAttr" id="skillAttr"></select>
+		<input type="submit" value="Add Skill"><br>
+</form><br>
+
+<form id = "attrForm">
+		Add Attribute:<br>
+		Name <input type="text" name="attrName" id="attrName">
+		<input type="submit" value="Add Attribute"><br>
+</form><br>
+
+<form id = "typeForm">
+		Add Type:<br>
+		Name <input type="text" name="typeName" id="typeName">
+		<input type="submit" value="Add Type"><br>
+</form><br>
+
+<form id = "senseForm">
+		Add Sense:<br>
+		Name <input type="text" name="senseName" id="senseName">
+		<input type="submit" value="Add Sense"><br>
+</form><br>
+
+<form id = "environForm">
+		Add Environment:<br>
+		Name <input type="text" name="environName" id="environName">
+		<input type="submit" value="Add environ"><br>
+</form><br>
+
+
+
+<form id = "delCreatureForm">
+		Delete Creature: <br>
+		<select name="del_creature" id="del_creature"></select>
+		<input type="submit" value="Delete Creature"><br>
+</form><br>
+
+<form id = "delAttrForm">
+		Delete Attribute: <br>
+		<select name="del_attr" id="del_attr"></select>
+		<input type="submit" value="Delete Attribute"><br>
+</form><br>
+
+<form id = "delEnvirForm">
+		Delete Environment: <br>
+		<select name="del_envir" id="del_envir"></select>
+		<input type="submit" value="Delete Environment"><br>
+</form><br>
+
+<form id = "delSenseForm">
+		Delete Sense: <br>
+		<select name="del_sense" id="del_sense"></select>
+		<input type="submit" value="Delete Sense"><br>
+</form><br>
+
+<form id = "delSkillForm">
+		Delete Skill: <br>
+		<select name="del_skill" id="del_skill"></select>
+		<input type="submit" value="Delete Skill"><br>
+</form><br>
+
+<form id = "delTypeForm">
+		Delete Type: <br>
+		<select name="del_type" id="del_type"></select>
+		<input type="submit" value="Delete Type"><br>
+</form><br>
+
+<form id = "remCSkillsForm">
+		Remove All Skills from Creature: <br>
+		<select name="rem_skills" id="rem_skills"></select>
+		<input type="submit" value="remove"><br>
+</form><br>
+
+<form id = "remCSensesForm">
+		Remove All Senses from Creature: <br>
+		<select name="rem_senses" id="rem_senses"></select>
+		<input type="submit" value="remove"><br>
+</form><br>
+
+
+<form id = "remCAttrsForm">
+		Remove All Attributes from Creature: <br>
+		<select name="rem_attrs" id="rem_attrs"></select>
+		<input type="submit" value="remove"><br>
+</form><br>
+
+
+<form id = "remCMinionsForm">
+		Remove All Minions from Creature: <br>
+		<select name="rem_minions" id="rem_minions"></select>
+		<input type="submit" value="remove"><br>
+</form><br>
+
+
+<form id = "remCEnvirsForm">
+		Remove All Environments from Creature: <br>
+		<select name="rem_envirs" id="rem_envirs"></select>
+		<input type="submit" value="remove"><br>
+</form><br>
+
+
+<script>
+	function dropdowns() {
+		$('#status').html('getting dropdown menus');
+		$.ajax({
+			type: 'POST',
+			url: 'dropdowns.php',
+			dataType: 'json',
+			success: function(data){
+				$('#status').html(' ');
+				$options = '';
+				for (i=0;i<data.attr.length;i++){
+					$options += "<option value='" + data.attr[i] + "'>" + data.attr[i] + "</option>"; 
+				}	
+				$('#skillAttr').html($options);
+				$('#ca_attr').html($options);
+				$('#del_attr').html($options);
+				
+				$options = '';
+				for (i=0;i<data.creature.length;i++){
+					$options += "<option value='" + data.creature[i] + "'>" + data.creature[i] + "</option>"; 
+				}
+				$('#boss').html($options);
+				$('#minion').html($options);
+				$('#ca_creature').html($options);
+				$('#cs_creature').html($options);
+				$('#ce_creature').html($options);
+				$('#csen_creature').html($options);
+				$('#del_creature').html($options);
+				$('#rem_skills').html($options);
+				$('#rem_senses').html($options);
+				$('#rem_attrs').html($options);
+				$('#rem_minions').html($options);
+				$('#rem_envirs').html($options);
+				
+				
+				$options = '';
+				for (i=0;i<data.type.length;i++){
+					$options += "<option value='" + data.type[i] + "'>" + data.type[i] + "</option>"; 
+				}
+				$('#creatureType').html($options);
+				$('#del_type').html($options);
+				
+				$options = '';
+				for (i=0;i<data.skill.length;i++){
+					$options += "<option value='" + data.skill[i] + "'>" + data.skill[i] + "</option>"; 
+				}
+				$('#cs_skill').html($options);
+				$('#del_skill').html($options);
+				
+				$options = '';
+				for (i=0;i<data.sense.length;i++){
+					$options += "<option value='" + data.sense[i] + "'>" + data.sense[i] + "</option>"; 
+				}
+				$('#csen_name').html($options);
+				$('#del_sense').html($options);
+				
+				$options = '';
+				for (i=0;i<data.environ.length;i++){
+					$options += "<option value='" + data.environ[i] + "'>" + data.environ[i] + "</option>"; 
+				}
+				$('#ce_name').html($options);
+				$('#del_envir').html($options);
+			},
+			error: function (){
+				$('#status').html('error populating dropdowns');
+			},
+		});
+	}
+	dropdowns();
+	
+	
+	
+	$('#skillForm').submit(function(event) {
+		
+		if($('#skillForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addSkill.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' Added');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Skill Not Added');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	});
+	
+	$('#attrForm').submit(function(event) {
+		
+		if($('#attrForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addAttribute.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' Added');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Attribute Not Added');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	});
+	
+	$('#typeForm').submit(function(event) {
+		
+		if($('#typeForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addType.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' Added');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Type Not Added');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	})
+
+	$('#senseForm').submit(function(event) {
+		
+		if($('#senseForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addSense.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' Added');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Sense Not Added');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	})
+	
+	$('#environForm').submit(function(event) {
+		
+		if($('#environForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addEnvironment.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' Added');
+						window.location.reload();
+					},
+					error: function (){
+						$('#status').html('Environment Not Added');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	})
+	
+	$('#minionForm').submit(function(event) {
+		
+		if($('#minionForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addMinion.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.minion + ' added as minion of ' + data.boss);
+						window.location.reload();
+					},
+					error: function (){
+						alert('Minion Not Added');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	})
+	$('#creatureForm').submit(function(event) {
+		
+		if($('#creatureForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addCreature.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name +'added/edited');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Creature Not Added');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	})
+	
+	$('#creatureAttrForm').submit(function(event) {
+		
+		if($('#creatureAttrForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addCreatureAttr.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.creature +' '+ data.attr + ' set to ' + data.value);
+						window.location.reload();
+					},
+					error: function (){
+						$('#status').html('Error: Attribute Not Added/edited');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	})
+	
+	$('#creatureSkillForm').submit(function(event) {
+		
+		if($('#creatureSkillForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addCreatureSkill.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.creature +' '+ data.skill + ' skill bonus set to +' + data.bonus);
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Skill Not Added/Edited');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	})
+	
+	$('#creatureSenseForm').submit(function(event) {
+		
+		if($('#creatureSenseForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addCreatureSense.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.creature +' has '+ data.sense + ' with a range of ' + data.range + 'ft');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Sense Not Added/Edited');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	})
+	
+		$('#creatureEnvironForm').submit(function(event) {
+		
+		if($('#creatureEnvironForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'ADD/addCreatureEnviron.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.creature +' lives in '+ data.environ);
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Environment Not Added');
+					},
+			});
+		}
+		else{
+			$('#status').html('Fields must contain only letters or numbers');
+		}
+	})	
+	$('#delCreatureForm').submit(function(event) {
+		if($('#delCreatureForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'DEL/delCreature.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name +' has been deleted');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Creature not deleted');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+	$('#delAttrForm').submit(function(event) {
+		if($('#delAttrForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'DEL/delAttribute.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name +' has been deleted');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Attribute not deleted');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+	$('#delEnvirForm').submit(function(event) {
+		if($('#delEnvirForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'DEL/delEnviron.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' has been deleted');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Environment not deleted');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+	$('#delSenseForm').submit(function(event) {
+		if($('#delSenseForm').valid()){
+		
+			event.preventDefault();
+			$('#status').html('Deleting Sense');
+			$.ajax({
+					type: 'POST',
+					url: 'DEL/delSense.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' has been deleted');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Sense not deleted');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+	$('#delSkillForm').submit(function(event) {
+		if($('#delSkillForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'DEL/delSkill.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' has been deleted');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Skill not deleted');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+	$('#delTypeForm').submit(function(event) {
+		if($('#delTypeForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'DEL/delType.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' has been deleted');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Type not deleted');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+	$('#remCSkillsForm').submit(function(event) {
+		if($('#remCSkillsForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'REM/remCSkills.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' has had all skills removed');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Skills not removed');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+	$('#remCSensesForm').submit(function(event) {
+		if($('#remCSensesForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'REM/remCSenses.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' has had all senses removed');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Senses not removed');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+	$('#remCAttrsForm').submit(function(event) {
+		if($('#remCAttrsForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'REM/remCAttrs.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' has had all attributes removed');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Attributes not removed');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+	$('#remCMinionsForm').submit(function(event) {
+		if($('#remCMinionsForm').valid()){
+		
+			event.preventDefault();
+			$.ajax({
+					type: 'POST',
+					url: 'REM/remCMinions.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' has had all minions removed');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Minions not removed');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+	$('#remCEnvirsForm').submit(function(event) {
+		if($('#remCEnvirsForm').valid()){
+		
+			event.preventDefault();
+			$('#status').html('Removing Environments');
+			$.ajax({
+					type: 'POST',
+					url: 'REM/remCEnvirs.php',
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function (data) {
+						alert(data.name + ' has had all minions removed');
+						window.location.reload();
+					},
+					error: function (){
+						alert('Error: Environments not removed');
+					},
+			});
+		}
+		else{
+			$('#status').html('Deletion aborted');
+		}
+		
+	})
+</script>
+
+
+
+</body>
+</html>
